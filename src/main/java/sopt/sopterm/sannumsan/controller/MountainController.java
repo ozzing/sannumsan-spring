@@ -21,15 +21,15 @@ public class MountainController {
 
     MountainRepository repo;
 
-    @GetMapping(produces = "application/json; charset=utf-8")
-    @ResponseBody
-    public List<MountainDTO> findAllMountain() {
-        List<Mountain> mountainList = repo.findAll();
-        List<MountainDTO> mountainDTOList = mountainList.stream()
-            .map(MountainDTO::new)
-            .collect(Collectors.toList());
-        return mountainDTOList;
-    }
+//    @GetMapping(produces = "application/json; charset=utf-8")
+//    @ResponseBody
+//    public List<MountainDTO> findAllMountain() {
+//        List<Mountain> mountainList = repo.findAll();
+//        List<MountainDTO> mountainDTOList = mountainList.stream()
+//            .map(MountainDTO::new)
+//            .collect(Collectors.toList());
+//        return mountainDTOList;
+//    }
 
     @GetMapping(value = "/carousel", produces = "application/json; charset=utf-8")
     @ResponseBody
