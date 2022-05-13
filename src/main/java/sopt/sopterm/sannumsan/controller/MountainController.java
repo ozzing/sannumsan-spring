@@ -7,10 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sopt.sopterm.sannumsan.domain.Climb;
 import sopt.sopterm.sannumsan.domain.Mountain;
+import sopt.sopterm.sannumsan.dto.ClimbMainDTO;
 import sopt.sopterm.sannumsan.dto.MountainDTO;
+import sopt.sopterm.sannumsan.repository.ClimbRepository;
 import sopt.sopterm.sannumsan.repository.MountainRepository;
 
 @Log
@@ -20,6 +24,7 @@ import sopt.sopterm.sannumsan.repository.MountainRepository;
 public class MountainController {
 
     MountainRepository repo;
+    ClimbRepository cRepo;
 
 //    @GetMapping(produces = "application/json; charset=utf-8")
 //    @ResponseBody
@@ -47,5 +52,23 @@ public class MountainController {
             .map(MountainDTO::new)
             .collect(Collectors.toList());
         return mountainDTOList;
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public List<ClimbMainDTO> findAllMountainAndClimbByUserId(@PathVariable("id") Long id) {
+        List<Mountain> mountainList = repo.findAll();
+//        List<Climb> climbList = cRepo.findAllByUserId(id);
+
+        List<ClimbMainDTO> resultList = new ArrayList<>();
+        mountainList.forEach(m -> {
+            List<Climb> climbList = m.getClimbs().stream()
+                .filter(c -> c.getUser().getId() == id)
+                .collect(Collectors.toList());
+            ClimbMainDTO climbMainDTO = new ClimbMainDTO(m, climbList);
+            resultList.add(climbMainDTO);
+        });
+
+        return resultList;
     }
 }

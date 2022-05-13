@@ -53,5 +53,5 @@ public class Mountain {
 
     @OneToMany(mappedBy = "mountain")
     private List<Climb> climbs;
-    
+
 }
