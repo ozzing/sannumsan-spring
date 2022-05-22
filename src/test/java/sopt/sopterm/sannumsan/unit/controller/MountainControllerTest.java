@@ -2,6 +2,7 @@ package sopt.sopterm.sannumsan.unit.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,105 @@ import sopt.sopterm.sannumsan.domain.Level;
 import sopt.sopterm.sannumsan.domain.Mountain;
 import sopt.sopterm.sannumsan.domain.User;
 import sopt.sopterm.sannumsan.dto.ClimbMainDTO;
+import sopt.sopterm.sannumsan.dto.MountainDTO;
 import sopt.sopterm.sannumsan.repository.ClimbRepository;
 import sopt.sopterm.sannumsan.repository.MountainRepository;
 
 public class MountainControllerTest {
+
+    @Test
+    @DisplayName("산 캐러셀 조회 결과가 없을 때, 빈 배열로 나오는지 확인")
+    public void testIfCarouselNotExistThenReturnEmptyList() {
+        // given
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        Mockito.when(mockMountainRepository.count())
+            .thenReturn(15L);
+        Long count = mockMountainRepository.count();
+        List<Long> idList = new ArrayList<Long>();
+        while (idList.size() < 5) {
+            Long newId = (long) (Math.random() * count) + 1;
+            if (idList.indexOf(newId) == -1) {
+                idList.add(newId);
+            }
+        }
+
+        Mockito.when(mockMountainRepository.count())
+            .thenReturn(15L);
+        Mockito.when(mockMountainRepository.getIdList(count))
+            .thenReturn(idList);
+        Mockito.when(mockMountainRepository.findAllByIdIn(idList))
+            .thenReturn(new ArrayList<>());
+
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+
+        // when
+        MountainController mountainController = new MountainController(
+            mockMountainRepository,
+            mockClimbRepository
+        );
+        List<MountainDTO> result = mountainController.findFiveMountain();
+        // then
+        Assertions.assertEquals(new ArrayList<>(), result);
+    }
+
+    @Test
+    @DisplayName("산 캐러셀 조회 결과가 있을 때, 배열이 나오는지 확인")
+    public void testIfCarouselExistThenReturnList() {
+        // given
+        Level level = Level.builder()
+            .id(1L)
+            .name("상")
+            .build();
+
+        List<Climb> climbList = new ArrayList<>();
+
+        List<Mountain> mountainList = new ArrayList<Mountain>();
+        for (Long i = Long.valueOf(0); i < 15; i++) {
+            Mountain mountain = Mountain.builder()
+                .id(i)
+                .name("북한산")
+                .image("image")
+                .height(111L)
+                .length(222L)
+                .timeUp(45L)
+                .timeDown(30L)
+                .level(level)
+                .climbs(climbList)
+                .build();
+            mountainList.add(mountain);
+        }
+
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        Mockito.when(mockMountainRepository.count())
+            .thenReturn(15L);
+        Long count = mockMountainRepository.count();
+        List<Long> idList = new ArrayList<Long>();
+        while (idList.size() < 5) {
+            Long newId = (long) (Math.random() * count) + 1;
+            if (idList.indexOf(newId) == -1) {
+                idList.add(newId);
+            }
+        }
+        Mockito.when(mockMountainRepository.getIdList(count))
+            .thenReturn(idList);
+        Mockito.when(mockMountainRepository.findAllByIdIn(idList))
+            .thenReturn(mountainList);
+
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+
+        // when
+        MountainController mountainController = new MountainController(
+            mockMountainRepository,
+            mockClimbRepository
+        );
+        List<MountainDTO> result = mountainController.findFiveMountain();
+
+        // then
+        List<MountainDTO> mountainDTOList = mountainList.stream()
+            .map(MountainDTO::new)
+            .collect(Collectors.toList());
+        Assertions.assertEquals(mountainDTOList, result);
+    }
 
     @Test
     @DisplayName("산 리스트 조회 결과가 없을 때, 빈 배열로 나오는지 확인")

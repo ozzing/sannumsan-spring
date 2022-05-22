@@ -30,13 +30,7 @@ public class MountainController {
     @ResponseBody
     public List<MountainDTO> findFiveMountain() {
         Long count = repo.count();
-        List<Long> idList = new ArrayList<Long>();
-        while (idList.size() < 5) {
-            Long newId = (long) (Math.random() * count) + 1;
-            if (idList.indexOf(newId) == -1) {
-                idList.add(newId);
-            }
-        }
+        List<Long> idList = repo.getIdList(count);
         List<Mountain> mountainList = repo.findAllByIdIn(idList);
         List<MountainDTO> mountainDTOList = mountainList.stream()
             .map(MountainDTO::new)
