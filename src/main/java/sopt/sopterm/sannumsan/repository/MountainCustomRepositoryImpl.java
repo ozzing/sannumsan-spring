@@ -2,21 +2,12 @@ package sopt.sopterm.sannumsan.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import sopt.sopterm.sannumsan.domain.Mountain;
+import javax.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 
-public abstract class MountainRepositoryImpl implements MountainRepository {
-
-    private List<Mountain> mountainList = new ArrayList<>();
-
-    @Override
-    public List<Mountain> findAll() {
-        return mountainList;
-    }
-
-    @Override
-    public List<Mountain> findAllByIdIn(List<Long> idList) {
-        return mountainList;
-    }
+@Repository
+@Transactional
+public class MountainCustomRepositoryImpl implements MountainCustomRepository {
 
     @Override
     public List<Long> getIdList(Long count) {
