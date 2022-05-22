@@ -1,11 +1,13 @@
 package sopt.sopterm.sannumsan.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import sopt.sopterm.sannumsan.domain.Mountain;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public class MountainDTO {
 
     private String name;

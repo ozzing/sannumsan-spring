@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,4 +55,45 @@ public class Mountain {
     @OneToMany(mappedBy = "mountain")
     private List<Climb> climbs;
 
+    //
+    @Builder
+    public Mountain(
+        Long id,
+        String name,
+        String image,
+        Long height,
+        Long length,
+        Long timeUp,
+        Long timeDown,
+        Level level,
+        List<Climb> climbs
+    ) {
+        if (name == null) {
+            throw new RuntimeException("이름은 필수값입니다.");
+        }
+        if (image == null) {
+            throw new RuntimeException("사진은 필수값입니다.");
+        }
+        if (height == null) {
+            throw new RuntimeException("높이는 필수값입니다.");
+        }
+        if (length == null) {
+            throw new RuntimeException("길이는 필수값입니다.");
+        }
+        if (timeUp == null) {
+            throw new RuntimeException("등반 소요시간은 필수값입니다.");
+        }
+        if (timeDown == null) {
+            throw new RuntimeException("하산 소요시간은 필수값입니다.");
+        }
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.height = height;
+        this.length = length;
+        this.timeUp = timeUp;
+        this.timeDown = timeDown;
+        this.level = level;
+        this.climbs = climbs;
+    }
 }

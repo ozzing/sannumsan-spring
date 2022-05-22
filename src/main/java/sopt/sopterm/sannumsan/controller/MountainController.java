@@ -26,16 +26,6 @@ public class MountainController {
     MountainRepository repo;
     ClimbRepository cRepo;
 
-//    @GetMapping(produces = "application/json; charset=utf-8")
-//    @ResponseBody
-//    public List<MountainDTO> findAllMountain() {
-//        List<Mountain> mountainList = repo.findAll();
-//        List<MountainDTO> mountainDTOList = mountainList.stream()
-//            .map(MountainDTO::new)
-//            .collect(Collectors.toList());
-//        return mountainDTOList;
-//    }
-
     @GetMapping(value = "/carousel", produces = "application/json; charset=utf-8")
     @ResponseBody
     public List<MountainDTO> findFiveMountain() {
@@ -58,7 +48,6 @@ public class MountainController {
     @ResponseBody
     public List<ClimbMainDTO> findAllMountainAndClimbByUserId(@PathVariable("id") Long id) {
         List<Mountain> mountainList = repo.findAll();
-//        List<Climb> climbList = cRepo.findAllByUserId(id);
 
         List<ClimbMainDTO> resultList = new ArrayList<>();
         mountainList.forEach(m -> {

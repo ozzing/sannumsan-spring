@@ -1,6 +1,7 @@
 package sopt.sopterm.sannumsan.dto;
 
 import java.util.List;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import sopt.sopterm.sannumsan.domain.Climb;
@@ -8,6 +9,7 @@ import sopt.sopterm.sannumsan.domain.Mountain;
 
 @Getter
 @ToString
+@EqualsAndHashCode
 public class ClimbMainDTO {
 
     private String image;
