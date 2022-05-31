@@ -483,7 +483,7 @@ public class ClimbControllerTest {
 
     @Test
     @DisplayName("등반 기록 이미지 수정 성공 시, 수정 결과 반환 되는지 확인")
-    public void testIfClimbImageEditSuccessThenReturnEditedUser() {
+    public void testIfClimbImageEditSuccessThenReturnEditedClimb() {
         // given
         Level level = Level.builder()
             .id(1L)
@@ -574,7 +574,7 @@ public class ClimbControllerTest {
 
     @Test
     @DisplayName("등반 기록 내용 수정 성공 시, 수정 결과 반환 되는지 확인")
-    public void testIfClimbContentEditSuccessThenReturnEditedUser() {
+    public void testIfClimbContentEditSuccessThenReturnEditedClimb() {
         // given
         Level level = Level.builder()
             .id(1L)
