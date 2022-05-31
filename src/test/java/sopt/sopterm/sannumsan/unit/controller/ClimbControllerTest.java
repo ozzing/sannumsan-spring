@@ -633,4 +633,82 @@ public class ClimbControllerTest {
         // then
         Assertions.assertEquals(CommonResponse.onSuccess(new ClimbDTO(climb)), result);
     }
+
+    @Test
+    @DisplayName("등반 기록 부재로 삭제 실패 시, NOT FOUND 예외 처리 하는지 확인")
+    public void testIfClimbDeleteFailWhenClimbNotExistThenThrowNotFoundException() {
+        // given
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        UserRepository mockUserRepository = Mockito.mock(UserRepository.class);
+
+        Mockito.when(mockClimbRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
+
+        // when
+        ClimbController climbController = new ClimbController(
+            mockClimbRepository,
+            mockMountainRepository,
+            mockUserRepository
+        );
+        CommonResponse<ClimbDTO> result = climbController.deleteClimbById(1L);
+
+        // then
+        Assertions.assertEquals(CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다."),
+            result);
+    }
+
+    @Test
+    @DisplayName("등반 기록 삭제 성공 시, 삭제된 등반 기록 반환하는지 확인")
+    public void testIfClimbDeleteSucceedThenReturnDeletedClimb() {
+        // given
+        Level level = Level.builder()
+            .id(1L)
+            .name("상")
+            .build();
+
+        Mountain mountain = Mountain.builder()
+            .id(1L)
+            .name("북한산")
+            .image("image")
+            .height(111L)
+            .length(222L)
+            .timeUp(45L)
+            .timeDown(30L)
+            .level(level)
+            .build();
+
+        User user1 = User.builder()
+            .id(1L)
+            .username("username")
+            .authenticationCode("123456")
+            .provider("kakao")
+            .totalHeight(10L)
+            .totalLength(10L)
+            .build();
+
+        Climb climb = Climb.builder()
+            .id(1L)
+            .content("content")
+            .image("image")
+            .user(user1)
+            .mountain(mountain)
+            .build();
+
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        UserRepository mockUserRepository = Mockito.mock(UserRepository.class);
+
+        Mockito.when(mockClimbRepository.findById(1L)).thenReturn(Optional.ofNullable(climb));
+
+        // when
+        ClimbController climbController = new ClimbController(
+            mockClimbRepository,
+            mockMountainRepository,
+            mockUserRepository
+        );
+        CommonResponse<ClimbDTO> result = climbController.deleteClimbById(1L);
+
+        // then
+        Assertions.assertEquals(CommonResponse.onSuccess(new ClimbDTO(climb)), result);
+    }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -117,6 +118,20 @@ public class ClimbController {
             origin.setContent(climbRequest.getContent());
             repo.save(origin);
         });
+
+        ClimbDTO climbDTO = new ClimbDTO(climb.get());
+        return CommonResponse.onSuccess(climbDTO);
+    }
+
+    @DeleteMapping(value = "/{id}", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public CommonResponse deleteClimbById(@PathVariable("id") Long id) {
+        Optional<Climb> climb = repo.findById(id);
+        if (climb.isEmpty()) {
+            return CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다.");
+        }
+        // 해당 유저가 맞는지 확인하는 절차 필요
+        repo.delete(climb.get());
 
         ClimbDTO climbDTO = new ClimbDTO(climb.get());
         return CommonResponse.onSuccess(climbDTO);
