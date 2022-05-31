@@ -2,6 +2,7 @@ package sopt.sopterm.sannumsan.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sopt.sopterm.sannumsan.domain.Climb;
 import sopt.sopterm.sannumsan.domain.Mountain;
@@ -38,20 +40,31 @@ public class MountainController {
         return mountainDTOList;
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json; charset=utf-8")
+    @GetMapping(value = "/", produces = "application/json; charset=utf-8")
     @ResponseBody
-    public List<ClimbMainDTO> findAllMountainAndClimbByUserId(@PathVariable("id") Long id) {
+    public List<ClimbMainDTO> findAllMountainAndClimbByUserId(@RequestParam("userId") Long userId) {
         List<Mountain> mountainList = repo.findAll();
 
         List<ClimbMainDTO> resultList = new ArrayList<>();
         mountainList.forEach(m -> {
             List<Climb> climbList = m.getClimbs().stream()
-                .filter(c -> c.getUser().getId() == id)
+                .filter(c -> c.getUser().getId() == userId)
                 .collect(Collectors.toList());
             ClimbMainDTO climbMainDTO = new ClimbMainDTO(m, climbList);
             resultList.add(climbMainDTO);
         });
 
         return resultList;
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public MountainDTO findMountainById(@PathVariable("id") Long id) {
+        Optional<Mountain> mountain = repo.findById(id);
+        if (mountain.isEmpty()) {
+            throw new RuntimeException();
+        }
+        MountainDTO mountainDTO = new MountainDTO(mountain.get());
+        return mountainDTO;
     }
 }
