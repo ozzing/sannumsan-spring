@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -82,6 +83,40 @@ public class ClimbController {
         if (climb.isEmpty()) {
             return CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다.");
         }
+
+        ClimbDTO climbDTO = new ClimbDTO(climb.get());
+        return CommonResponse.onSuccess(climbDTO);
+    }
+
+    @PutMapping(value = "/{id}/image", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public CommonResponse<ClimbDTO> editClimbImageById(@PathVariable("id") Long id,
+        @RequestBody ClimbRequest climbRequest) {
+        Optional<Climb> climb = repo.findById(id);
+        if (climb.isEmpty()) {
+            return CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다.");
+        }
+        climb.ifPresent(origin -> {
+            origin.setImage(climbRequest.getImage());
+            repo.save(origin);
+        });
+
+        ClimbDTO climbDTO = new ClimbDTO(climb.get());
+        return CommonResponse.onSuccess(climbDTO);
+    }
+
+    @PutMapping(value = "/{id}/name", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public CommonResponse<ClimbDTO> editClimbContentById(@PathVariable("id") Long id,
+        @RequestBody ClimbRequest climbRequest) {
+        Optional<Climb> climb = repo.findById(id);
+        if (climb.isEmpty()) {
+            return CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다.");
+        }
+        climb.ifPresent(origin -> {
+            origin.setContent(climbRequest.getContent());
+            repo.save(origin);
+        });
 
         ClimbDTO climbDTO = new ClimbDTO(climb.get());
         return CommonResponse.onSuccess(climbDTO);

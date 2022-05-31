@@ -10,4 +10,6 @@ public interface ClimbRepository extends JpaRepository<Climb, Long> {
     public List<Climb> findAllByUserId(Long id);
 
     public Optional<Climb> findByUserIdAndMountainId(Long userId, Long mountainId);
+
+    public Optional<Climb> findById(Long id);
 }

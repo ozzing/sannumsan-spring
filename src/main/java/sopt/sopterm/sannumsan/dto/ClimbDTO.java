@@ -11,6 +11,7 @@ import sopt.sopterm.sannumsan.domain.Climb;
 @EqualsAndHashCode
 public class ClimbDTO {
 
+    private Long id;
     private String name;
     private Long height;
     private Long length;
@@ -23,6 +24,7 @@ public class ClimbDTO {
     private Long userId;
 
     public ClimbDTO(Climb climb) {
+        this.id = climb.getId();
         this.image = climb.getImage();
         this.height = climb.getMountain().getHeight();
         this.length = climb.getMountain().getLength();

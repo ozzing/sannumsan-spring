@@ -451,4 +451,186 @@ public class ClimbControllerTest {
         // then
         Assertions.assertEquals(CommonResponse.onSuccess(new ClimbDTO(climb)), result);
     }
+
+    @Test
+    @DisplayName("등반 기록 이미지 수정 시 등반 기록 없을 경우, 예외 처리 되는지 확인")
+    public void testIfClimbImageEditFailWhenClimbNotExistThenThrowException() {
+        // given
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        UserRepository mockUserRepository = Mockito.mock(UserRepository.class);
+
+        Mockito.when(mockClimbRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
+        ClimbRequest climbRequest = ClimbRequest.builder()
+            .mountainId(1L)
+            .content("content")
+            .image("image")
+            .userId(1L)
+            .build();
+
+        // when
+        ClimbController climbController = new ClimbController(
+            mockClimbRepository,
+            mockMountainRepository,
+            mockUserRepository
+        );
+        CommonResponse<ClimbDTO> result = climbController.editClimbImageById(1L, climbRequest);
+
+        // then
+        Assertions.assertEquals(CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다."),
+            result);
+    }
+
+    @Test
+    @DisplayName("등반 기록 이미지 수정 성공 시, 수정 결과 반환 되는지 확인")
+    public void testIfClimbImageEditSuccessThenReturnEditedUser() {
+        // given
+        Level level = Level.builder()
+            .id(1L)
+            .name("상")
+            .build();
+
+        Mountain mountain = Mountain.builder()
+            .id(1L)
+            .name("북한산")
+            .image("image")
+            .height(111L)
+            .length(222L)
+            .timeUp(45L)
+            .timeDown(30L)
+            .level(level)
+            .build();
+
+        User user1 = User.builder()
+            .id(1L)
+            .username("username")
+            .authenticationCode("123456")
+            .provider("kakao")
+            .totalHeight(10L)
+            .totalLength(10L)
+            .build();
+
+        Climb climb = Climb.builder()
+            .id(1L)
+            .content("content")
+            .image("image")
+            .user(user1)
+            .mountain(mountain)
+            .build();
+
+        ClimbRequest climbRequest = ClimbRequest.builder()
+            .mountainId(1L)
+            .content("content")
+            .image("image")
+            .userId(1L)
+            .build();
+
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        UserRepository mockUserRepository = Mockito.mock(UserRepository.class);
+
+        Mockito.when(mockClimbRepository.findById(1L)).thenReturn(Optional.ofNullable(climb));
+
+        // when
+        ClimbController climbController = new ClimbController(
+            mockClimbRepository,
+            mockMountainRepository,
+            mockUserRepository
+        );
+        CommonResponse<ClimbDTO> result = climbController.editClimbImageById(1L, climbRequest);
+
+        // then
+        Assertions.assertEquals(CommonResponse.onSuccess(new ClimbDTO(climb)), result);
+    }
+
+    @Test
+    @DisplayName("등반 기록 내용 수정 시 등반 기록 없을 경우, 예외 처리 되는지 확인")
+    public void testIfClimbContentEditFailWhenClimbNotExistThenThrowException() {
+        // given
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        UserRepository mockUserRepository = Mockito.mock(UserRepository.class);
+
+        Mockito.when(mockClimbRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
+        ClimbRequest climbRequest = ClimbRequest.builder()
+            .mountainId(1L)
+            .content("content")
+            .image("image")
+            .userId(1L)
+            .build();
+
+        // when
+        ClimbController climbController = new ClimbController(
+            mockClimbRepository,
+            mockMountainRepository,
+            mockUserRepository
+        );
+        CommonResponse<ClimbDTO> result = climbController.editClimbContentById(1L, climbRequest);
+
+        // then
+        Assertions.assertEquals(CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다."),
+            result);
+    }
+
+    @Test
+    @DisplayName("등반 기록 내용 수정 성공 시, 수정 결과 반환 되는지 확인")
+    public void testIfClimbContentEditSuccessThenReturnEditedUser() {
+        // given
+        Level level = Level.builder()
+            .id(1L)
+            .name("상")
+            .build();
+
+        Mountain mountain = Mountain.builder()
+            .id(1L)
+            .name("북한산")
+            .image("image")
+            .height(111L)
+            .length(222L)
+            .timeUp(45L)
+            .timeDown(30L)
+            .level(level)
+            .build();
+
+        User user1 = User.builder()
+            .id(1L)
+            .username("username")
+            .authenticationCode("123456")
+            .provider("kakao")
+            .totalHeight(10L)
+            .totalLength(10L)
+            .build();
+
+        Climb climb = Climb.builder()
+            .id(1L)
+            .content("content")
+            .image("image")
+            .user(user1)
+            .mountain(mountain)
+            .build();
+
+        ClimbRequest climbRequest = ClimbRequest.builder()
+            .mountainId(1L)
+            .content("content")
+            .image("image")
+            .userId(1L)
+            .build();
+
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        UserRepository mockUserRepository = Mockito.mock(UserRepository.class);
+
+        Mockito.when(mockClimbRepository.findById(1L)).thenReturn(Optional.ofNullable(climb));
+
+        // when
+        ClimbController climbController = new ClimbController(
+            mockClimbRepository,
+            mockMountainRepository,
+            mockUserRepository
+        );
+        CommonResponse<ClimbDTO> result = climbController.editClimbContentById(1L, climbRequest);
+
+        // then
+        Assertions.assertEquals(CommonResponse.onSuccess(new ClimbDTO(climb)), result);
+    }
 }
