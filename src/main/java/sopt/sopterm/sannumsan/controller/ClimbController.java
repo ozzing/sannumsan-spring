@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,6 +62,28 @@ public class ClimbController {
         });
 
         ClimbDTO climbDTO = new ClimbDTO(climb);
+        return CommonResponse.onSuccess(climbDTO);
+    }
+
+    @GetMapping(value = "/mountain/{mountainId}", produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public CommonResponse<ClimbDTO> findClimbByMountainId(
+        @PathVariable("mountainId") Long mountainId) {
+        Optional<Mountain> mountain = mRepo.findById(mountainId);
+        if (mountain.isEmpty()) {
+            return CommonResponse.onFailure(HttpStatus.NOT_FOUND, "해당 산이 없습니다.");
+        }
+        Optional<User> user = uRepo.findById(1L); // 유저 아이디 토큰에서 받아오는 형태로 변경 필요
+        if (user.isEmpty()) {
+            return CommonResponse.onFailure(HttpStatus.NOT_FOUND, "해당 유저가 없습니다.");
+        }
+        Optional<Climb> climb = repo.findByUserIdAndMountainId(1L,
+            mountainId); // 유저 아이디 토큰에서 받아오는 형태로 변경 필요
+        if (climb.isEmpty()) {
+            return CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 등산 기록입니다.");
+        }
+
+        ClimbDTO climbDTO = new ClimbDTO(climb.get());
         return CommonResponse.onSuccess(climbDTO);
     }
 }
