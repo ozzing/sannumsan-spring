@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import sopt.sopterm.sannumsan.config.CommonResponse;
 import sopt.sopterm.sannumsan.controller.MountainController;
 import sopt.sopterm.sannumsan.domain.Climb;
 import sopt.sopterm.sannumsan.domain.Level;
@@ -49,9 +50,9 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<MountainDTO> result = mountainController.findFiveMountain();
+        CommonResponse<List<MountainDTO>> result = mountainController.findFiveMountain();
         // then
-        Assertions.assertEquals(new ArrayList<>(), result);
+        Assertions.assertEquals(CommonResponse.onSuccess(new ArrayList<>()), result);
     }
 
     @Test
@@ -104,13 +105,13 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<MountainDTO> result = mountainController.findFiveMountain();
+        CommonResponse<List<MountainDTO>> result = mountainController.findFiveMountain();
 
         // then
         List<MountainDTO> mountainDTOList = mountainList.stream()
             .map(MountainDTO::new)
             .collect(Collectors.toList());
-        Assertions.assertEquals(mountainDTOList, result);
+        Assertions.assertEquals(CommonResponse.onSuccess(mountainDTOList), result);
     }
 
     @Test
@@ -128,10 +129,11 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<ClimbMainDTO> result = mountainController.findAllMountainAndClimbByUserId(1L);
+        CommonResponse<List<ClimbMainDTO>> result = mountainController.findAllMountainAndClimbByUserId(
+            1L);
 
         // then
-        Assertions.assertEquals(new ArrayList<>(), result);
+        Assertions.assertEquals(CommonResponse.onSuccess(new ArrayList<>()), result);
     }
 
     @Test
@@ -169,13 +171,14 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<ClimbMainDTO> result = mountainController.findAllMountainAndClimbByUserId(1L);
+        CommonResponse<List<ClimbMainDTO>> result = mountainController.findAllMountainAndClimbByUserId(
+            1L);
 
         // then
         ClimbMainDTO climbMainDTO = new ClimbMainDTO(mountain, climbList);
         List<ClimbMainDTO> climbMainDTOList = new ArrayList<ClimbMainDTO>();
         climbMainDTOList.add(climbMainDTO);
-        Assertions.assertEquals(climbMainDTOList, result);
+        Assertions.assertEquals(CommonResponse.onSuccess(climbMainDTOList), result);
     }
 
     @Test
@@ -232,12 +235,13 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<ClimbMainDTO> result = mountainController.findAllMountainAndClimbByUserId(1L);
+        CommonResponse<List<ClimbMainDTO>> result = mountainController.findAllMountainAndClimbByUserId(
+            1L);
 
         // then
         ClimbMainDTO climbMainDTO = new ClimbMainDTO(mountain, climbList);
         List<ClimbMainDTO> climbMainDTOList = new ArrayList<ClimbMainDTO>();
         climbMainDTOList.add(climbMainDTO);
-        Assertions.assertEquals(climbMainDTOList, result);
+        Assertions.assertEquals(CommonResponse.onSuccess(climbMainDTOList), result);
     }
 }
