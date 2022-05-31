@@ -59,9 +59,9 @@ public class Climb extends AbstractTimestamp {
         if (user == null) {
             throw new RuntimeException("유저는 필수값입니다.");
         }
-//        if (mountain == null) {
-//            throw new RuntimeException("산은 필수값입니다.");
-//        }
+        if (mountain == null) {
+            throw new RuntimeException("산은 필수값입니다.");
+        }
         this.id = id;
         this.content = content;
         this.image = image;
