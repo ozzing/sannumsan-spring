@@ -105,7 +105,7 @@ public class ClimbController {
         return CommonResponse.onSuccess(climbDTO);
     }
 
-    @PutMapping(value = "/{id}/name", produces = "application/json; charset=utf-8")
+    @PutMapping(value = "/{id}/content", produces = "application/json; charset=utf-8")
     @ResponseBody
     public CommonResponse<ClimbDTO> editClimbContentById(@PathVariable("id") Long id,
         @RequestBody ClimbRequest climbRequest) {
