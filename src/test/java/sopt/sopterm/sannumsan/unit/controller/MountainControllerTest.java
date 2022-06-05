@@ -2,11 +2,14 @@ package sopt.sopterm.sannumsan.unit.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
+import sopt.sopterm.sannumsan.config.CommonResponse;
 import sopt.sopterm.sannumsan.controller.MountainController;
 import sopt.sopterm.sannumsan.domain.Climb;
 import sopt.sopterm.sannumsan.domain.Level;
@@ -49,9 +52,9 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<MountainDTO> result = mountainController.findFiveMountain();
+        CommonResponse<List<MountainDTO>> result = mountainController.findFiveMountain();
         // then
-        Assertions.assertEquals(new ArrayList<>(), result);
+        Assertions.assertEquals(CommonResponse.onSuccess(new ArrayList<>()), result);
     }
 
     @Test
@@ -104,13 +107,13 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<MountainDTO> result = mountainController.findFiveMountain();
+        CommonResponse<List<MountainDTO>> result = mountainController.findFiveMountain();
 
         // then
         List<MountainDTO> mountainDTOList = mountainList.stream()
             .map(MountainDTO::new)
             .collect(Collectors.toList());
-        Assertions.assertEquals(mountainDTOList, result);
+        Assertions.assertEquals(CommonResponse.onSuccess(mountainDTOList), result);
     }
 
     @Test
@@ -128,10 +131,11 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<ClimbMainDTO> result = mountainController.findAllMountainAndClimbByUserId(1L);
+        CommonResponse<List<ClimbMainDTO>> result = mountainController.findAllMountainAndClimbByUserId(
+            1L);
 
         // then
-        Assertions.assertEquals(new ArrayList<>(), result);
+        Assertions.assertEquals(CommonResponse.onSuccess(new ArrayList<>()), result);
     }
 
     @Test
@@ -169,13 +173,14 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<ClimbMainDTO> result = mountainController.findAllMountainAndClimbByUserId(1L);
+        CommonResponse<List<ClimbMainDTO>> result = mountainController.findAllMountainAndClimbByUserId(
+            1L);
 
         // then
         ClimbMainDTO climbMainDTO = new ClimbMainDTO(mountain, climbList);
         List<ClimbMainDTO> climbMainDTOList = new ArrayList<ClimbMainDTO>();
         climbMainDTOList.add(climbMainDTO);
-        Assertions.assertEquals(climbMainDTOList, result);
+        Assertions.assertEquals(CommonResponse.onSuccess(climbMainDTOList), result);
     }
 
     @Test
@@ -232,12 +237,75 @@ public class MountainControllerTest {
             mockMountainRepository,
             mockClimbRepository
         );
-        List<ClimbMainDTO> result = mountainController.findAllMountainAndClimbByUserId(1L);
+        CommonResponse<List<ClimbMainDTO>> result = mountainController.findAllMountainAndClimbByUserId(
+            1L);
 
         // then
         ClimbMainDTO climbMainDTO = new ClimbMainDTO(mountain, climbList);
         List<ClimbMainDTO> climbMainDTOList = new ArrayList<ClimbMainDTO>();
         climbMainDTOList.add(climbMainDTO);
-        Assertions.assertEquals(climbMainDTOList, result);
+        Assertions.assertEquals(CommonResponse.onSuccess(climbMainDTOList), result);
     }
+
+    @Test
+    @DisplayName("산 번호로 조회 결과 존재하지 않을 때, NOT FOUND 에러 처리")
+    public void testIfMountainNotExistThenThrowNotFoundException() {
+        // given
+        Mountain mountain = null;
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        Mockito.when(mockMountainRepository.findById(1L))
+            .thenReturn(Optional.ofNullable(mountain));
+
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+
+        // when
+        MountainController mountainController = new MountainController(
+            mockMountainRepository,
+            mockClimbRepository
+        );
+        CommonResponse result = mountainController.findMountainById(1L);
+
+        // then
+        Assertions.assertEquals(CommonResponse.onFailure(HttpStatus.NOT_FOUND, "존재하지 않는 산입니다."),
+            result);
+    }
+
+    @Test
+    @DisplayName("산 번호로 조회 결과 존재할 때, 산 정보 나오는지 확인")
+    public void testIfMountainExistThenReturnMountain() {
+        // given
+        Level level = Level.builder()
+            .id(1L)
+            .name("상")
+            .build();
+
+        Mountain mountain = Mountain.builder()
+            .id(1L)
+            .name("산")
+            .image("url")
+            .height(123L)
+            .length(456L)
+            .timeUp(40L)
+            .timeDown(20L)
+            .level(level)
+            .build();
+
+        MountainRepository mockMountainRepository = Mockito.mock(MountainRepository.class);
+        Mockito.when(mockMountainRepository.findById(1L))
+            .thenReturn(Optional.ofNullable(mountain));
+
+        ClimbRepository mockClimbRepository = Mockito.mock(ClimbRepository.class);
+
+        // when
+        MountainController mountainController = new MountainController(
+            mockMountainRepository,
+            mockClimbRepository
+        );
+        CommonResponse result = mountainController.findMountainById(1L);
+
+        // then
+        MountainDTO mountainDTO = new MountainDTO(mountain);
+        Assertions.assertEquals(CommonResponse.onSuccess(mountainDTO), result);
+    }
+
 }
